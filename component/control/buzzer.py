@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 sys.path.append("../")
-from serial_channel import SERIAL_CHANNEL
+from component.serial_channel import SERIAL_CHANNEL
 
 serial = SERIAL_CHANNEL
 

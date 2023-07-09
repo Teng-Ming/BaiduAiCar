@@ -1,11 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
-import sys
-sys.path.append("../config/")
 import time
 import serial
-from config.board import CONTROLLER
 
 comma_head_01_motor = bytes.fromhex('77 68 06 00 02 0C 01 01')
 comma_head_02_motor = bytes.fromhex('77 68 06 00 02 0C 01 02')
@@ -18,23 +14,18 @@ class Chassis:
     """
     底盘控制
     """
-    def __init__(self):
+    def __init__(self, bps = 380400):
         """
         :rtype: object
         """
         self.speed = 20
         self.kx = 0.85
         portx = "/dev/ttyUSB0"
-        if CONTROLLER == "mc601":
-            bps = 380400
-        elif CONTROLLER == "wobot":
-            bps = 115200
-        else:
-            bps = 115200
-        self.serial = serial.Serial(portx, int(bps), timeout=0.0005, parity=serial.PARITY_NONE, stopbits=1)
+        self.serial = serial.Serial(portx, int(bps), timeout=0.000005, parity=serial.PARITY_NONE, stopbits=1)
         self.p = 0.8
         self.slow_ratio = 0.97
         self.min_speed = 20
+        time.sleep(1)
 
     def steer(self, angle):
         speed = int(self.speed)
@@ -61,10 +52,13 @@ class Chassis:
         return speed
 
     def move(self, speeds):
+        '''
+        左前 | 右前 | 左后 | 右后
+        '''
         left_front = int(speeds[0])
-        right_front = -int(speeds[1])
+        right_front = int(speeds[1])
         left_rear = int(speeds[2])
-        right_rear = -int(speeds[3])
+        right_rear = int(speeds[3])
         self.min_speed = int(min(speeds))
 
         left_front=self.exchange(left_front)
@@ -101,9 +95,12 @@ class Chassis:
 
 
 if __name__ == "__main__":
-    c = Chassis()
+    c = Chassis(115200)
+    time.sleep(1)
     while True:
-        c.move([20, 20, 20, 20])
+        # + - + -
+        c.move([30, 30, 30, 30])
+        
         time.sleep(4)
         c.stop()
-        time.sleep(1)
+        time.sleep(4)

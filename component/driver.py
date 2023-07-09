@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import time
-from chassis import Chassis
+import sys
+sys.path.append("../")
+sys.path.append("../component")
+from component.chassis import Chassis
 
 class Driver:
     '''
@@ -12,7 +15,7 @@ class Driver:
 
     def __init__(self):
         self.full_speed = 40
-        self.chassis = Chassis()
+        self.chassis = Chassis(115200)
         self.speed = self.full_speed
         self.proportion = 1.5
 
@@ -21,6 +24,9 @@ class Driver:
 
     def run(self, l_speed, r_speed):
         self.chassis.move([l_speed, r_speed, l_speed, r_speed])
+
+    def move(self, speed):
+        self.chassis.move(speed)
 
     def stop(self):
         self.chassis.stop()
@@ -78,11 +84,13 @@ class Driver:
 
 if __name__ == '__main__':
     d = Driver()
-    time.sleep(2)
-    d.set_speed(20)
-    d.run(20, 20)
-    time.sleep(2)
-    d.stop()
-    time.sleep(1)
+    while True:
+        d.steer(1)
+        #time.sleep(2)
+        #d.set_speed(20)
+        #d.run(25, 25)
+        #time.sleep(2)
+        #d.stop()
+        #time.sleep(1)
 
 
